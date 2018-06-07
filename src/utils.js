@@ -1,3 +1,10 @@
+export function pathDefToD (pathDef) {
+  const d = pathDef.map((item) => {
+    return `${item[0]}${item[1].join(',')}`
+  }).join(' ')
+  return d
+}
+
 export function shuffle (array, opts = {}) {
   // per https://github.com/d3/d3-array/blob/master/src/shuffle.js
   const {i0, i1, random} = {
@@ -22,6 +29,7 @@ export function sample (array, n, opts = {}) {
 }
 
 export default {
+  pathDefToD,
   sample,
   shuffle,
 }

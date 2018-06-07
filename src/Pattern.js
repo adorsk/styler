@@ -1,15 +1,17 @@
 import React from 'react'
+import utils from './utils'
 
 
 const SVG_NS = 'http://www.w3.org/2000/svg'
 
 class Pattern extends React.Component {
   render () {
+    const { tiler } = this.props
     const width = 360
     const height = 360
     const n = 24
-    const regions = this.generateRegions({width, height, n})
-    const overallBounds = {width, height}
+    const tiles = tiler({width, height, n})
+    const globalBox = {width, height}
     return (
       <div>
         <svg
@@ -18,70 +20,52 @@ class Pattern extends React.Component {
           height={height}
           viewBox={`0 0 ${width} ${height}`}
         >
-          {this.renderRegions({regions, overallBounds})}
+          {this.renderTiles({tiles, globalBox})}
         </svg>
       </div>
     )
   }
 
-  generateRegions (opts) {
-    const { width, height, n } = {
-      ...{width: 100, height: 100},
-      ...opts,
-    }
-    const steps = {x: (width / n), y: (height / n)}
-    const regions = []
-    for (let x = 0; x < width; x += steps.x) {
-      for (let y = 0; y < height; y += steps.y) {
-        const region = {
-          key: `(${x}, ${y})`,
-          x,
-          y,
-          bounds: {
-            x0: x,
-            x1: x + steps.x,
-            y0: y,
-            y1: y + steps.y,
-          }
-        }
-        regions.push(region)
-      }
-    }
-    return regions
-  }
-
-  renderRegions (opts = {}) {
-    const { regions, overallBounds } = opts
-    return regions.map((region, i) => {
-      return this.renderRegion({
-        region,
-        index: i,
-        regions,
-        overallBounds,
+  renderTiles (opts = {}) {
+    const { tiles, globalBox } = opts
+    return tiles.map((tile, index) => {
+      return this.renderTile({
+        tile,
+        index,
+        tiles,
+        globalBox,
       })
     })
   }
 
-  renderRegion (opts = {}) {
+  renderTile (opts = {}) {
     const { renderer, formValues } = this.props
-    const { region, regions, index, overallBounds } = opts
+    const { tile, tiles, index, globalBox } = opts
+    const clipId = `${tile.key}-clip`
     return (
       <svg
-        key={region.key}
+        key={tile.key}
         xmlns={SVG_NS}
-        x={region.x}
-        y={region.y}
-        width={region.bounds.x1 - region.bounds.x0}
-        height={region.bounds.y1 - region.bounds.y0}
+        x={tile.x}
+        y={tile.y}
+        width={tile.box.width}
+        height={tile.box.height}
       >
-        {
-          renderer.renderFn({
-            region,
-            regions,
-            index,
-            formValues,
-            overallBounds,
-          })}
+        <defs>
+          <clipPath id={clipId}>
+            <path d={utils.pathDefToD(tile.pathDef)} />
+          </clipPath>
+        </defs>
+        <g clipPath={`url(#${clipId})`}>
+          {
+            renderer.renderFn({
+              tile,
+              tiles,
+              index,
+              formValues,
+              globalBox,
+            })}
+        </g>
       </svg>
     )
   }

@@ -11,9 +11,9 @@ class NoiseRenderer {
   }
 
   render (opts) {
-    const { region, overallBounds } = opts
-    const width = region.bounds.x1 - region.bounds.x0
-    const height = region.bounds.y1 - region.bounds.y0
+    const { tile } = opts
+    const width = tile.box.x1 - tile.box.x0
+    const height = tile.box.y1 - tile.box.y0
     const numNoises = 2
     let noiseUrls = []
     // const hues = [0, 30, 240]
@@ -22,7 +22,7 @@ class NoiseRenderer {
       /*
       const hue = (
         2 *
-        Math.floor((region.x / overallBounds.width) * 360)
+        Math.floor((tile.x / overallBounds.width) * 360)
         + (i * (360 / numNoises))
         % 360
       )
@@ -35,7 +35,7 @@ class NoiseRenderer {
       const noiseUrl = this.generateNoiseUrl({
         width,
         height,
-        // density: (region.x / overallBounds.width),
+        // density: (tile.x / overallBounds.width),
         // density: .3,
         density: (
           .2 + (this.prng.randomInt({min: 0, max: 5}) * .1)

@@ -8,8 +8,8 @@ let renderers = {}
 
 renderers['linear hue, index-based'] = {
   renderFn: (opts) => {
-    const { index, regions } = opts
-    const h = (index / regions.length) * 360
+    const { index, tiles } = opts
+    const h = (index / tiles.length) * 360
     const fill = `hsl(${h}, 100%, 50%)`
     return (
       <g>
@@ -23,8 +23,8 @@ renderers['linear hue, index-based'] = {
 
 renderers['linear hue, x-based'] = {
   renderFn: (opts) => {
-    const { region, overallBounds } = opts
-    const h = ((2 * region.x / overallBounds.width) * 360) % 360
+    const { tile, globalBox } = opts
+    const h = ((2 * tile.x / globalBox.width) * 360) % 360
     const fill = `hsl(${h}, 100%, 50%)`
     return (
       <g>
@@ -38,9 +38,9 @@ renderers['linear hue, x-based'] = {
 
 renderers['x:h, y:s'] = {
   renderFn: (opts) => {
-    const { region, overallBounds } = opts
-    const h = ((2 * region.x / overallBounds.width) * 360) % 360
-    const s = ((2 * region.y / overallBounds.height) * 100) % 100
+    const { tile, globalBox } = opts
+    const h = ((2 * tile.x / globalBox.width) * 360) % 360
+    const s = ((2 * tile.y / globalBox.height) * 100) % 100
     const fill = `hsl(${h}, ${s}%, 50%)`
     return (
       <g>
@@ -55,9 +55,9 @@ renderers['x:h, y:s'] = {
 
 renderers['x:h, y:c'] = {
   renderFn: (opts) => {
-    const { region, overallBounds } = opts
-    const h = ((2 * region.x / overallBounds.width) * 360) % 360
-    const c = ((2 * region.y / overallBounds.height) * 100) % 100
+    const { tile, globalBox } = opts
+    const h = ((2 * tile.x / globalBox.width) * 360) % 360
+    const c = ((2 * tile.y / globalBox.height) * 100) % 100
     const fill = chroma.hcl(h, c, 100).css()
     return (
       <g>
@@ -71,8 +71,8 @@ renderers['x:h, y:c'] = {
 
 renderers['opacity=1, x:num overlays'] = {
   renderFn: (opts) => {
-    const { region, overallBounds } = opts
-    const numOverlays = Math.floor(100 * region.x / overallBounds.width)
+    const { tile, globalBox } = opts
+    const numOverlays = Math.floor(100 * tile.x / globalBox.width)
     const fill = chroma.rgb(255, 0, 0).alpha(.01).css()
     return (
       <g>
@@ -81,8 +81,8 @@ renderers['opacity=1, x:num overlays'] = {
             return (
               <rect
                 key={i}
-              x="0" y="0" height="100%" width="100%"
-              fill={fill} />
+                x="0" y="0" height="100%" width="100%"
+                fill={fill} />
             )
           })
         }
