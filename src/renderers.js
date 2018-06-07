@@ -69,28 +69,6 @@ renderers['x:h, y:c'] = {
   }
 }
 
-renderers['opacity=1, x:num overlays'] = {
-  renderFn: (opts) => {
-    const { tile, globalBox } = opts
-    const numOverlays = Math.floor(100 * tile.x / globalBox.width)
-    const fill = chroma.rgb(255, 0, 0).alpha(.01).css()
-    return (
-      <g>
-        {
-          [...Array(numOverlays).keys()].map((i) => {
-            return (
-              <rect
-                key={i}
-                x="0" y="0" height="100%" width="100%"
-                fill={fill} />
-            )
-          })
-        }
-      </g>
-    )
-  }
-}
-
 renderers['noise'] = {
   renderFn: (() => {
     const noiseRenderer = new NoiseRenderer()

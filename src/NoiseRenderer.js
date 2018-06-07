@@ -38,7 +38,7 @@ class NoiseRenderer {
         // density: (tile.x / overallBounds.width),
         // density: .3,
         density: (
-          .2 + (this.prng.randomInt({min: 0, max: 5}) * .1)
+          .3 + (this.prng.randomInt({min: 0, max: 5}) * .1)
         ),
         rgba: chroma.hsl(hue, 1, .5).alpha(.6).rgba(),
       })
