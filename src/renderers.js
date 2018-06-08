@@ -2,7 +2,6 @@ import React from 'react'
 import chroma from 'chroma-js'
 
 import NoiseRenderer from './NoiseRenderer'
-import Prng from './Prng'
 import utils from './utils'
 
 
@@ -73,8 +72,8 @@ renderers['x:h, y:c'] = {
 
 renderers['gradient'] = {
   renderFn: (opts) => {
-    const { tile } = opts
-    const prng = new Prng()
+    const { tile, ctx } = opts
+    const prng = ctx.prng
     const getColor = () => {
       const hues = [0, 30, 60]
       const fuzz = 40
@@ -130,6 +129,53 @@ renderers['gradient'] = {
     )
   }
 }
+
+renderers['circles'] = {
+  renderFn: (opts) => {
+    const { tile, ctx } = opts
+    const prng = ctx.prng
+    const getColor = () => {
+      const baseHue = prng.randomInt({min:0, max: 360})
+      const hueStep = 30
+      const hues = [...Array(3).keys()].map((i) => {
+        return (baseHue + (hueStep * i)) % 360
+      })
+      const fuzz = 20
+      const hue = (
+        (
+          utils.sample(hues, 1)[0]
+          + prng.randomInt({min: -fuzz, max: fuzz})
+        ) % 360
+      )
+      return chroma.hsl(hue, 1, .5)
+    }
+    const numCircles = prng.randomInt({min: 5, max: 10})
+    return (
+      <g>
+        {
+          [...Array(numCircles).keys()].map((i) => {
+            const r = prng.randomInt({
+              min: 5,
+              max: .5 * Math.max(tile.box.width, tile.box.height),
+            })
+            const cx = prng.randomInt({
+              min: -(2 * r),
+              max: tile.box.width + (2 * r),
+            })
+            const cy = prng.randomInt({
+              min: -(2 * r),
+              max: tile.box.height + (2 * r),
+            })
+            const fill = getColor().alpha(.5).css()
+            const circleProps = {r, cx, cy, fill}
+            return (<circle key={i} {...circleProps} />)
+          })
+        }
+      </g>
+    )
+  }
+}
+
 
 renderers['noise'] = {
   renderFn: (() => {

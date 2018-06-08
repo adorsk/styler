@@ -11,6 +11,10 @@ class Prng {
     if (this._seed <= 0) this._seed += 2147483646;
   }
 
+  setSeed (seed) {
+    this._seed = seed
+  }
+
   /**
    * Returns a pseudo-random value between 1 and 2^32 - 2.
    */

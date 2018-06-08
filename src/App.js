@@ -5,14 +5,26 @@ import Pattern from './Pattern'
 import Form from './Form'
 import renderers from './renderers'
 import tilers from './tilers'
+import Prng from './Prng'
 
 
 class App extends React.Component {
+  constructor (props) {
+    super(props)
+    this.prng = new Prng()
+  }
 
   render() {
-    const { currentRendererKey, currentTilerKey, formValues } = this.props
+    const {
+      currentRendererKey,
+      currentTilerKey,
+      formValues,
+      currentSeed,
+    } = this.props
+    this.prng.setSeed(currentSeed)
     const commonProps = {
       formValues,
+      prng: this.prng,
       renderer: renderers[currentRendererKey],
       tiler: tilers[currentTilerKey],
     }
@@ -20,6 +32,7 @@ class App extends React.Component {
       <div className="App">
         {this.renderRendererSelect({currentRendererKey})}
         {this.renderTilerSelect({currentTilerKey})}
+        {this.renderSeedInput({currentSeed})}
         <Pattern {...commonProps} />
         <Form {...commonProps} />
       </div>
@@ -73,6 +86,22 @@ class App extends React.Component {
           })
         }
       </select>
+    )
+  }
+
+  renderSeedInput (opts = {}) {
+    const { currentSeed } = opts
+    return (
+      <input
+        type="number"
+        value={currentSeed}
+        onChange={(e) => {
+          this.props.dispatch({
+            type: 'setCurrentSeed',
+            payload: parseInt(e.target.value, 10),
+          })
+        }}
+      />
     )
   }
 }
