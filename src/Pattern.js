@@ -6,13 +6,13 @@ const SVG_NS = 'http://www.w3.org/2000/svg'
 
 class Pattern extends React.Component {
   render () {
-    const { tiler, prng } = this.props
+    const { tiler, palette, prng } = this.props
     const width = 360
     const height = 360
     const n = 24
     const tiles = tiler({width, height, n})
     const globalBox = {width, height}
-    const renderCtx = { prng }
+    const renderCtx = { prng, palette }
     return (
       <div>
         <svg

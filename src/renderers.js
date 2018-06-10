@@ -73,18 +73,7 @@ renderers['x:h, y:c'] = {
 renderers['gradient'] = {
   renderFn: (opts) => {
     const { tile, ctx } = opts
-    const prng = ctx.prng
-    const getColor = () => {
-      const hues = [0, 30, 60]
-      const fuzz = 40
-      const hue = (
-        (
-          utils.sample(hues, 1)[0]
-          + prng.randomInt({min: -fuzz, max: fuzz})
-        ) % 360
-      )
-      return chroma.hsl(hue, 1, .5)
-    }
+    const { prng, palette } = ctx
     const stops = [
       // {offset: 0, color: chroma.random().css()},
       // {offset: 100, color: chroma.random().css()},
@@ -98,7 +87,7 @@ renderers['gradient'] = {
           return [...Array(numStops).keys()].map((i) => {
             return {
               offset: Math.round((i / numStops) * 100),
-              color: getColor().css(),
+              color: palette.getColor().css(),
             }
           })
         })()
@@ -133,22 +122,7 @@ renderers['gradient'] = {
 renderers['circles'] = {
   renderFn: (opts) => {
     const { tile, ctx } = opts
-    const prng = ctx.prng
-    const getColor = () => {
-      const baseHue = prng.randomInt({min:0, max: 360})
-      const hueStep = 30
-      const hues = [...Array(3).keys()].map((i) => {
-        return (baseHue + (hueStep * i)) % 360
-      })
-      const fuzz = 20
-      const hue = (
-        (
-          utils.sample(hues, 1)[0]
-          + prng.randomInt({min: -fuzz, max: fuzz})
-        ) % 360
-      )
-      return chroma.hsl(hue, 1, .5)
-    }
+    const { prng, palette } = ctx
     const numCircles = prng.randomInt({min: 5, max: 10})
     return (
       <g>
@@ -166,7 +140,7 @@ renderers['circles'] = {
               min: -(2 * r),
               max: tile.box.height + (2 * r),
             })
-            const fill = getColor().alpha(.5).css()
+            const fill = palette.getColor().alpha(.5).css()
             const circleProps = {r, cx, cy, fill}
             return (<circle key={i} {...circleProps} />)
           })
@@ -180,23 +154,7 @@ renderers['circles'] = {
 renderers['stripes'] = {
   renderFn: (opts) => {
     const { tile, ctx } = opts
-    const prng = ctx.prng
-    const getColor = () => {
-      // const baseHue = prng.randomInt({min:0, max: 360})
-      const baseHue = prng.randomInt({min:0, max: 30})
-      const hueStep = 30
-      const hues = [...Array(3).keys()].map((i) => {
-        return (baseHue + (hueStep * i)) % 360
-      })
-      const fuzz = 20
-      const hue = (
-        (
-          utils.sample(hues, 1)[0]
-          + prng.randomInt({min: -fuzz, max: fuzz})
-        ) % 360
-      )
-      return chroma.hsl(hue, 1, .5)
-    }
+    const { prng, palette } = ctx
     const numStripes = prng.randomInt({min: 5, max: 10})
     const stripeWidth = tile.box.width / numStripes
     return (
@@ -210,7 +168,7 @@ renderers['stripes'] = {
               y1: 0,
               y2: tile.box.height,
               strokeWidth: stripeWidth,
-              stroke: getColor().css(),
+              stroke: palette.getColor().css(),
             }
             return (<line key={i} {...lineProps} />)
           })

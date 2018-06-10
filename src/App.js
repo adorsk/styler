@@ -5,6 +5,7 @@ import Pattern from './Pattern'
 import Form from './Form'
 import renderers from './renderers'
 import tilers from './tilers'
+import palettes from './palettes'
 import Prng from './Prng'
 
 
@@ -18,6 +19,7 @@ class App extends React.Component {
     const {
       currentRendererKey,
       currentTilerKey,
+      currentPaletteKey,
       formValues,
       currentSeed,
     } = this.props
@@ -27,11 +29,13 @@ class App extends React.Component {
       prng: this.prng,
       renderer: renderers[currentRendererKey],
       tiler: tilers[currentTilerKey],
+      palette: palettes[currentPaletteKey]({prng: this.prng}),
     }
     return (
       <div className="App">
         {this.renderRendererSelect({currentRendererKey})}
         {this.renderTilerSelect({currentTilerKey})}
+        {this.renderPaletteSelect({currentPaletteKey})}
         {this.renderSeedInput({currentSeed})}
         <Pattern {...commonProps} />
         <Form {...commonProps} />
@@ -81,6 +85,31 @@ class App extends React.Component {
             return (
               <option key={tilerKey} value={tilerKey}>
                 {tilerKey}
+              </option>
+            )
+          })
+        }
+      </select>
+    )
+  }
+
+  renderPaletteSelect (opts = {}) {
+    const { currentPaletteKey } = opts
+    return (
+      <select
+        value={currentPaletteKey}
+        onChange={(e) => {
+          this.props.dispatch({
+            type: 'setCurrentPaletteKey',
+            payload: e.target.value,
+          })
+        }}
+      >
+        {
+          Object.keys(palettes).map((paletteKey) => {
+            return (
+              <option key={paletteKey} value={paletteKey}>
+                {paletteKey}
               </option>
             )
           })

@@ -6,41 +6,24 @@ import utils from './utils'
 
 
 class NoiseRenderer {
-  constructor (opts = {}) {
-    this.prng = new Prng()
-  }
-
   render (opts) {
-    const { tile } = opts
+    const { tile, ctx } = opts
+    const { prng, palette } = ctx
     const width = tile.box.x1 - tile.box.x0
     const height = tile.box.y1 - tile.box.y0
     const numNoises = 2
     let noiseUrls = []
-    // const hues = [0, 30, 240]
-    const hues = [0, 30]
     for (let i = 0; i < numNoises; i++) {
-      /*
-      const hue = (
-        2 *
-        Math.floor((tile.x / overallBounds.width) * 360)
-        + (i * (360 / numNoises))
-        % 360
-      )
-      */
-      // const hue = this.prng.randomInt({min: 0, max: 360})
-      const hue = (
-        utils.sample(hues, 1)[0] 
-        + (this.prng.randomInt({min: -10, max: 10}))
-      )
       const noiseUrl = this.generateNoiseUrl({
         width,
         height,
+        prng,
         // density: (tile.x / overallBounds.width),
         // density: .3,
         density: (
-          .3 + (this.prng.randomInt({min: 0, max: 5}) * .1)
+          .3 + (prng.randomInt({min: 0, max: 5}) * .1)
         ),
-        rgba: chroma.hsl(hue, 1, .5).alpha(.6).rgba(),
+        rgba: palette.getColor().alpha(.6).rgba(),
       })
       noiseUrls.push(noiseUrl)
     }
@@ -61,7 +44,7 @@ class NoiseRenderer {
   }
 
   generateNoiseUrl (opts = {}) {
-    const { width, height, density, rgba} = {
+    const { width, height, density, prng, rgba} = {
       density: .5,
       rgba: [0, 0, 0, 1],
       ...opts
@@ -69,7 +52,11 @@ class NoiseRenderer {
     const numPixels = width * height
     const numNoisePixels = Math.floor(density * numPixels)
     const pixelIdxs = [...Array(numPixels).keys()]
-    const noisePixelIdxs = utils.sample(pixelIdxs, numNoisePixels, {random: this.prng.random.bind(this.prng)})
+    const noisePixelIdxs = utils.sample(
+      pixelIdxs,
+      numNoisePixels,
+      {random: prng.random.bind(prng)}
+    )
     const canvas = this.generateCanvas({width, height})
     const ctx = canvas.getContext('2d')
     const imgData = ctx.createImageData(width, height)
