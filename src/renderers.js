@@ -177,6 +177,50 @@ renderers['circles'] = {
 }
 
 
+renderers['stripes'] = {
+  renderFn: (opts) => {
+    const { tile, ctx } = opts
+    const prng = ctx.prng
+    const getColor = () => {
+      // const baseHue = prng.randomInt({min:0, max: 360})
+      const baseHue = prng.randomInt({min:0, max: 30})
+      const hueStep = 30
+      const hues = [...Array(3).keys()].map((i) => {
+        return (baseHue + (hueStep * i)) % 360
+      })
+      const fuzz = 20
+      const hue = (
+        (
+          utils.sample(hues, 1)[0]
+          + prng.randomInt({min: -fuzz, max: fuzz})
+        ) % 360
+      )
+      return chroma.hsl(hue, 1, .5)
+    }
+    const numStripes = prng.randomInt({min: 5, max: 10})
+    const stripeWidth = tile.box.width / numStripes
+    return (
+      <g>
+        {
+          [...Array(numStripes).keys()].map((i) => {
+            const x = (.5 * stripeWidth) + (i * stripeWidth)
+            const lineProps = {
+              x1: x,
+              x2: x,
+              y1: 0,
+              y2: tile.box.height,
+              strokeWidth: stripeWidth,
+              stroke: getColor().css(),
+            }
+            return (<line key={i} {...lineProps} />)
+          })
+        }
+      </g>
+    )
+  }
+}
+
+
 renderers['noise'] = {
   renderFn: (() => {
     const noiseRenderer = new NoiseRenderer()
