@@ -4,7 +4,7 @@ import utils from './utils'
 
 const SVG_NS = 'http://www.w3.org/2000/svg'
 
-class Pattern extends React.Component {
+class PatternContainer extends React.Component {
   render () {
     const { tiler, palette, prng } = this.props
     const width = 360
@@ -75,4 +75,4 @@ class Pattern extends React.Component {
   }
 }
 
-export default Pattern
+export default PatternContainer

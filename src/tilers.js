@@ -32,6 +32,7 @@ tilers.bigRect = (opts) => {
 tilers.rects = (opts) => {
   const { width, height, n } = {
     ...{width: 100, height: 100},
+    n: 24,
     ...opts,
   }
   const rectDimensions = {
@@ -72,6 +73,7 @@ tilers.rects = (opts) => {
 tilers.diamonds = (opts) => {
   const { width, height, n } = {
     ...{width: 100, height: 100},
+    n: 24,
     ...opts,
   }
   const dimensions = {

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 
 import React from 'react'
-import Pattern from './Pattern'
+import PatternContainer from './PatternContainer'
 import renderers from './renderers'
 import tilers from './tilers'
 import palettes from './palettes'
@@ -36,7 +36,7 @@ class App extends React.Component {
         {this.renderTilerSelect({currentTilerKey})}
         {this.renderPaletteSelect({currentPaletteKey})}
         {this.renderSeedInput({currentSeed})}
-        <Pattern {...commonProps} />
+        <PatternContainer {...commonProps} />
       </div>
     );
   }
