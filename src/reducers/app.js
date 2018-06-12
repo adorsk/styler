@@ -1,4 +1,4 @@
-import renderers from '../renderers'
+import renderers from '../renderers/registry'
 import tilers from '../tilers'
 import palettes from '../palettes'
 

@@ -12,7 +12,7 @@ class Canvas extends React.Component {
   }
 
   updateCanvas () {
-    this.props.updateCanvas({canvas: this.canvas})
+    this.props.updateCanvas(this.canvas)
   }
 
   componentDidUpdate () {

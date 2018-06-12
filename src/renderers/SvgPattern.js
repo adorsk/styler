@@ -1,6 +1,5 @@
 import React from 'react'
 
-import _ from 'lodash'
 import utils from '../utils'
 import BasePattern from './BasePattern'
 

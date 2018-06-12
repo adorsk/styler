@@ -2,6 +2,9 @@ import React from 'react'
 import chroma from 'chroma-js'
 
 import SvgPattern from './SvgPattern'
+import CanvasPattern from './CanvasPattern'
+import NoiseRenderer from './NoiseRenderer'
+import BasisGradientRenderer from './BasisGradientRenderer'
 
 let registry = {}
 
@@ -165,6 +168,20 @@ registry['stripes'] = new SvgPattern({
     )
   }
 })
+
+registry['noise'] = (() => {
+  const noiseRenderer = new NoiseRenderer()
+  return new CanvasPattern({
+    renderTile: noiseRenderer.renderTile.bind(noiseRenderer),
+  })
+})()
+
+registry['basis gradient'] = (() => {
+  const basisRenderer = new BasisGradientRenderer()
+  return new CanvasPattern({
+    renderTile: basisRenderer.renderTile.bind(basisRenderer),
+  })
+})()
 
 
 export default registry
