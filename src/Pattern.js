@@ -29,6 +29,7 @@ class Pattern extends React.Component {
 
   renderTiles (opts = {}) {
     const { tiles, globalBox, renderCtx } = opts
+    const { renderer, formValues } = this.props
     return tiles.map((tile, index) => {
       return this.renderTile({
         tile,

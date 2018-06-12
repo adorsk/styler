@@ -2,7 +2,6 @@ import { connect } from 'react-redux'
 
 import React from 'react'
 import Pattern from './Pattern'
-import Form from './Form'
 import renderers from './renderers'
 import tilers from './tilers'
 import palettes from './palettes'
@@ -38,7 +37,6 @@ class App extends React.Component {
         {this.renderPaletteSelect({currentPaletteKey})}
         {this.renderSeedInput({currentSeed})}
         <Pattern {...commonProps} />
-        <Form {...commonProps} />
       </div>
     );
   }
