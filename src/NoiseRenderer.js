@@ -1,7 +1,4 @@
 import React from 'react'
-import chroma from 'chroma-js'
-
-import Prng from './Prng'
 import utils from './utils'
 
 

@@ -2,6 +2,7 @@ import React from 'react'
 import chroma from 'chroma-js'
 
 import NoiseRenderer from './NoiseRenderer'
+import Canvas from './Canvas'
 import utils from './utils'
 
 
@@ -178,12 +179,61 @@ renderers['stripes'] = {
   }
 }
 
-
 renderers['noise'] = {
   renderFn: (() => {
     const noiseRenderer = new NoiseRenderer()
     return noiseRenderer.render.bind(noiseRenderer)
   })()
+}
+
+renderers['basis gradient'] = {
+  renderFn: (opts) => {
+    const { tile, index, tiles, ctx, globalBox } = opts
+    const { palette, prng } = ctx
+    const startColor = chroma('blue')
+    const endColor = chroma('red')
+
+    let interpolators = {}
+    const channels = ['r', 'g', 'b']
+    for (let channel of channels) {
+      const start = startColor.get(`rgb.${channel}`)
+      const end = endColor.get(`rgb.${channel}`)
+      // const mid = start + (end - start) * (tile.x / globalBox.width)
+      const mid = start + (end - start) * (index / tiles.length)
+      interpolators[channel] = utils.interpolateBasis(
+        [start, mid, end])
+    }
+
+    const gradientFn = (opts = {}) => {
+      const { t } = opts
+      const rgb = {}
+      for (let channel of channels) {
+        rgb[channel] = interpolators[channel](t)
+      }
+      return chroma(rgb.r, rgb.g, rgb.b, 'rgb')
+    }
+
+    const canvas = document.createElement('canvas')
+    canvas.width = tile.box.width
+    canvas.height = tile.box.height
+    const canvasCtx = canvas.getContext('2d')
+    const lineWidth = 1;
+    for (let i = 0; i < canvas.width; i += lineWidth) {
+      const t = i / canvas.width
+      canvasCtx.fillStyle = gradientFn({t})
+      canvasCtx.fillRect(
+        i * lineWidth,
+        0,
+        lineWidth,
+        canvas.height
+      )
+    }
+    return (
+      <image
+        width={tile.box.width} height={tile.box.height}
+        href={canvas.toDataURL()} />
+    )
+  }
 }
 
 export default renderers

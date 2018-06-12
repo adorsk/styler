@@ -1,5 +1,34 @@
 let tilers = {}
 
+/* A single big rectangle. */
+tilers.bigRect = (opts) => {
+  const { width, height } = {
+    ...{width: 100, height: 100},
+    ...opts,
+  }
+  const tiles = [{
+    key: `bigTile`,
+    x: 0,
+    y: 0,
+    pathDef: [
+      ['M', [0, 0]],
+      ['L', [width, 0]],
+      ['L', [width, height]],
+      ['L', [0, height]],
+      ['L', [0, 0]],
+    ],
+    box: {
+      x0: 0,
+      x1: width,
+      y0: 0,
+      y1: height,
+      width,
+      height
+    },
+  }]
+  return tiles
+}
+
 tilers.rects = (opts) => {
   const { width, height, n } = {
     ...{width: 100, height: 100},
