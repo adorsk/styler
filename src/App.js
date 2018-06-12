@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 
 import React from 'react'
 import PatternContainer from './PatternContainer'
-import renderers from './renderers'
+import renderers from './renderers/registry'
 import tilers from './tilers'
 import palettes from './palettes'
 import Prng from './Prng'
