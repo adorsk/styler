@@ -183,5 +183,30 @@ registry['basis gradient'] = (() => {
   })
 })()
 
+registry['elbows'] = (() => {
+  return new CanvasRenderer({
+    renderTile: (props) => {
+      const { canvas, tile, palette } = props
+      const ctx = canvas.getContext('2d')
+      const baseColor = palette.getColor()
+      const maxDimension = Math.max(tile.box.width, tile.box.height)
+      for (let i = maxDimension; i > 0; i--) {
+        let color
+        if (i % 2) {
+          color = baseColor
+        } else {
+          color = chroma.hsl(
+            ((baseColor.get('hsl.h') + 180) % 360),
+            baseColor.get('hsl.s') / 2,
+            baseColor.get('hsl.l') / 2
+          )
+        }
+        ctx.fillStyle = color
+        ctx.fillRect(0, 0, i, i)
+      }
+    }
+  })
+})()
+
 
 export default registry
