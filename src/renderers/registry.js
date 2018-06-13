@@ -1,14 +1,14 @@
 import React from 'react'
 import chroma from 'chroma-js'
 
-import SvgPattern from './SvgPattern'
-import CanvasPattern from './CanvasPattern'
+import SvgRenderer from './SvgRenderer'
+import CanvasRenderer from './CanvasRenderer'
 import NoiseRenderer from './NoiseRenderer'
 import BasisGradientRenderer from './BasisGradientRenderer'
 
 let registry = {}
 
-registry['linear hue, index-based'] = new SvgPattern({
+registry['linear hue, index-based'] = new SvgRenderer({
   renderTile: (props) => {
     const { index, tiles } = props
     const h = (index / tiles.length) * 360
@@ -23,7 +23,7 @@ registry['linear hue, index-based'] = new SvgPattern({
   }
 })
 
-registry['linear hue, x-based'] = new SvgPattern({
+registry['linear hue, x-based'] = new SvgRenderer({
   renderTile: (props) => {
     const { tile, globalBox } = props
     const h = ((2 * tile.x / globalBox.width) * 360) % 360
@@ -38,7 +38,7 @@ registry['linear hue, x-based'] = new SvgPattern({
   }
 })
 
-registry['x:h, y:s'] = new SvgPattern({
+registry['x:h, y:s'] = new SvgRenderer({
   renderTile: (props) => {
     const { tile, globalBox } = props
     const h = ((2 * tile.x / globalBox.width) * 360) % 360
@@ -54,7 +54,7 @@ registry['x:h, y:s'] = new SvgPattern({
   }
 })
 
-registry['x:h, y:c'] = new SvgPattern({
+registry['x:h, y:c'] = new SvgRenderer({
   renderTile: (props) => {
     const { tile, globalBox } = props
     const h = ((2 * tile.x / globalBox.width) * 360) % 360
@@ -70,7 +70,7 @@ registry['x:h, y:c'] = new SvgPattern({
   }
 })
 
-registry['gradient'] = new SvgPattern({
+registry['gradient'] = new SvgRenderer({
   renderTile: (props) => {
     const { tile, prng, palette } = props
     const stops = [
@@ -112,7 +112,7 @@ registry['gradient'] = new SvgPattern({
   }
 })
 
-registry['circles'] = new SvgPattern({
+registry['circles'] = new SvgRenderer({
   renderTile: (props) => {
     const { tile, prng, palette } = props
     const numCircles = prng.randomInt({min: 5, max: 10})
@@ -143,7 +143,7 @@ registry['circles'] = new SvgPattern({
 })
 
 
-registry['stripes'] = new SvgPattern({
+registry['stripes'] = new SvgRenderer({
   renderTile: (props) => {
     const { tile, prng, palette} = props
     const numStripes = prng.randomInt({min: 5, max: 10})
@@ -171,14 +171,14 @@ registry['stripes'] = new SvgPattern({
 
 registry['noise'] = (() => {
   const noiseRenderer = new NoiseRenderer()
-  return new CanvasPattern({
+  return new CanvasRenderer({
     renderTile: noiseRenderer.renderTile.bind(noiseRenderer),
   })
 })()
 
 registry['basis gradient'] = (() => {
   const basisRenderer = new BasisGradientRenderer()
-  return new CanvasPattern({
+  return new CanvasRenderer({
     renderTile: basisRenderer.renderTile.bind(basisRenderer),
   })
 })()

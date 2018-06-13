@@ -1,4 +1,4 @@
-class BasePattern {
+class BaseRenderer {
   renderPattern () { return null }
 
   renderTiles (opts = {}) {}
@@ -6,4 +6,4 @@ class BasePattern {
   renderTile (opts = {}) {}
 }
 
-export default BasePattern
+export default BaseRenderer

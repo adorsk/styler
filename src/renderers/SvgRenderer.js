@@ -1,12 +1,12 @@
 import React from 'react'
 
 import utils from '../utils'
-import BasePattern from './BasePattern'
+import BaseRenderer from './BaseRenderer'
 
 
 const SVG_NS = 'http://www.w3.org/2000/svg'
 
-class SvgPattern extends BasePattern {
+class SvgRenderer extends BaseRenderer {
   constructor (props = {}) {
     super(props)
     this.renderTile = props.renderTile || (() => null)
@@ -63,4 +63,4 @@ class SvgPattern extends BasePattern {
   }
 }
 
-export default SvgPattern
+export default SvgRenderer

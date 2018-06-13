@@ -1,11 +1,11 @@
 import React from 'react'
 
-import BasePattern from './BasePattern'
+import BaseRenderer from './BaseRenderer'
 import Canvas from './Canvas'
 import utils from '../utils'
 
 
-class CanvasPattern extends BasePattern {
+class CanvasRenderer extends BaseRenderer {
   constructor (props = {}) {
     super(props)
     this.renderTile = props.renderTile || (() => null)
@@ -42,4 +42,4 @@ class CanvasPattern extends BasePattern {
   }
 }
 
-export default CanvasPattern
+export default CanvasRenderer
