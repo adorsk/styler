@@ -10,12 +10,16 @@ class NoiseRenderer {
   renderTile (props) {
     const { tile, canvas, ctx, prng, palette } = props
     const numNoises = 2
+    const width = (tile.box.x1 - tile.box.x0)
+    const height = (tile.box.y1 - tile.box.y0)
+    this.memCanvas.width = width
+    this.memCanvas.height = height
     for (let i = 0; i < numNoises; i++) {
       this.renderNoise({
         canvas,
         ctx,
-        width: (tile.box.x1 - tile.box.x0),
-        height: (tile.box.y1 - tile.box.y0),
+        width,
+        height,
         density: (.3 + (prng.randomInt({min: 0, max: 5}) * .1)),
         prng,
         rgba: palette.getColor().alpha(.6).rgba(),
