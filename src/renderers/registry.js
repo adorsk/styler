@@ -6,6 +6,7 @@ import CanvasRenderer from './CanvasRenderer'
 import NoiseRenderer from './NoiseRenderer'
 import BasisGradientRenderer from './BasisGradientRenderer'
 import colorGenerators from '../colorGenerators'
+import StrokesRenderer from './StrokesRenderer'
 
 let registry = {}
 
@@ -200,6 +201,14 @@ registry['corners'] = (() => {
     }
   })
 })()
+
+registry['strokes'] = (() => {
+  const strokesRenderer = new StrokesRenderer()
+  return new CanvasRenderer({
+    renderTile: strokesRenderer.renderTile.bind(strokesRenderer),
+  })
+})()
+
 
 
 export default registry

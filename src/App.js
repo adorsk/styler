@@ -5,6 +5,7 @@ import PatternContainer from './PatternContainer'
 import renderers from './renderers/registry'
 import tilers from './tilers'
 import palettes from './palettes'
+import colorGenerators from './colorGenerators'
 import Prng from './Prng'
 
 
@@ -19,6 +20,7 @@ class App extends React.Component {
       currentRendererKey,
       currentTilerKey,
       currentPaletteKey,
+      currentColorGeneratorKey,
       formValues,
       currentSeed,
     } = this.props
@@ -29,12 +31,14 @@ class App extends React.Component {
       renderer: renderers[currentRendererKey],
       tiler: tilers[currentTilerKey],
       palette: palettes[currentPaletteKey]({prng: this.prng}),
+      colorGenerator: colorGenerators[currentColorGeneratorKey]
     }
     return (
       <div className="App">
         {this.renderRendererSelect({currentRendererKey})}
         {this.renderTilerSelect({currentTilerKey})}
         {this.renderPaletteSelect({currentPaletteKey})}
+        {this.renderColorGeneratorSelect({currentColorGeneratorKey})}
         {this.renderSeedInput({currentSeed})}
         <PatternContainer {...commonProps} />
       </div>
@@ -108,6 +112,31 @@ class App extends React.Component {
             return (
               <option key={paletteKey} value={paletteKey}>
                 {paletteKey}
+              </option>
+            )
+          })
+        }
+      </select>
+    )
+  }
+
+  renderColorGeneratorSelect (opts = {}) {
+    const { currentColorGeneratorKey } = opts
+    return (
+      <select
+        value={currentColorGeneratorKey}
+        onChange={(e) => {
+          this.props.dispatch({
+            type: 'setCurrentColorGeneratorKey',
+            payload: e.target.value,
+          })
+        }}
+      >
+        {
+          Object.keys(colorGenerators).map((colorGeneratorKey) => {
+            return (
+              <option key={colorGeneratorKey} value={colorGeneratorKey}>
+                {colorGeneratorKey}
               </option>
             )
           })
