@@ -26,7 +26,7 @@ class StrokesRenderer {
         ]
         ctx.beginPath()
         ctx.lineWidth = 1
-        ctx.strokeStyle = colorFn({t: (x / tile.box.width)})
+        ctx.strokeStyle = chroma(colorFn({t: (x / tile.box.width)})).css()
         ctx.moveTo(...startPos)
         ctx.lineTo(...endPos)
         ctx.stroke()

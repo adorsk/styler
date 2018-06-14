@@ -55,5 +55,34 @@ colorGenerators.foo = (props) => {
   return generator
 }
 
+colorGenerators.scale = (props) => {
+  const { colors, mode } = {mode: 'rgb', ...props}
+  const scaleFn = chroma.scale(colors).mode(mode)
+  const generator = ((opts) => scaleFn(opts.t))
+  return generator
+}
+
+colorGenerators.toWhite = (props) => {
+  return colorGenerators.scale({colors: [props.seedColor, 'white']})
+}
+
+colorGenerators.toBlack = (props) => {
+  return colorGenerators.scale({colors: [props.seedColor, 'black']})
+}
+
+colorGenerators.toTransparent = (props) => {
+  const generator = (opts) => {
+    const c = chroma(props.seedColor).alpha(opts.t)
+    return c
+  }
+  return generator
+}
+
+colorGenerators.identity = (props) => {
+  return () => props.seedColor
+}
+
+colorGenerators.random = () => chroma.random
+
 export default colorGenerators
 

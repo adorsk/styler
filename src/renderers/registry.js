@@ -5,7 +5,6 @@ import SvgRenderer from './SvgRenderer'
 import CanvasRenderer from './CanvasRenderer'
 import NoiseRenderer from './NoiseRenderer'
 import BasisGradientRenderer from './BasisGradientRenderer'
-import colorGenerators from '../colorGenerators'
 import StrokesRenderer from './StrokesRenderer'
 
 let registry = {}
@@ -188,15 +187,19 @@ registry['basis gradient'] = (() => {
 registry['corners'] = (() => {
   return new CanvasRenderer({
     renderTile: (props) => {
-      const { canvas, tile, palette } = props
+      const { canvas, tile, palette, colorGenerator } = props
       const ctx = canvas.getContext('2d')
-      const colorGenerator = colorGenerators['foo']({
-        seedColor: palette.getColor()
-      })
+      const colorFn = colorGenerator({seedColor: palette.getColor()})
       const maxDimension = Math.max(tile.box.width, tile.box.height)
-      for (let i = maxDimension; i > 0; i--) {
-        ctx.fillStyle = colorGenerator({t: i/maxDimension})
-        ctx.fillRect(0, 0, i, i)
+      const lineWidth = 1
+      ctx.lineWidth = lineWidth
+      for (let i = 0; i < maxDimension; i += lineWidth) {
+        ctx.beginPath()
+        ctx.strokeStyle = chroma(colorFn({t: i/maxDimension})).css()
+        ctx.moveTo(0, i)
+        ctx.lineTo(i, i)
+        ctx.lineTo(i, 0)
+        ctx.stroke()
       }
     }
   })
