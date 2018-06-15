@@ -5,7 +5,7 @@ import utils from '../utils'
 
 class BasisGradientRenderer {
   renderTile (props) {
-    const { canvas, tile, index, tiles, palette, prng, globalBox } = props
+    const { canvas, tile, index, tiles } = props
     const startColor = chroma('blue')
     const endColor = chroma('red')
 

@@ -6,6 +6,7 @@ import CanvasRenderer from './CanvasRenderer'
 import NoiseRenderer from './NoiseRenderer'
 import BasisGradientRenderer from './BasisGradientRenderer'
 import StrokesRenderer from './StrokesRenderer'
+import BlobsRenderer from './BlobsRenderer'
 
 let registry = {}
 
@@ -212,6 +213,12 @@ registry['strokes'] = (() => {
   })
 })()
 
+registry['blobs'] = (() => {
+  const blobsRenderer = new BlobsRenderer()
+  return new CanvasRenderer({
+    renderTile: blobsRenderer.renderTile.bind(blobsRenderer),
+  })
+})()
 
 
 export default registry

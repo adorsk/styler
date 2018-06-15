@@ -1,13 +1,9 @@
 import chroma from 'chroma-js'
-import utils from '../utils'
 
 
 class StrokesRenderer {
   renderTile (props) {
-    const {
-      canvas, tile, index, tiles, palette, prng,
-      globalBox, colorGenerator
-    } = props
+    const {canvas, tile, palette, prng, colorGenerator } = props
     const ctx = canvas.getContext('2d')
     const maxDimension = Math.max(tile.box.height, tile.box.width)
     const gridSpacing = Math.ceil(maxDimension / 10)
