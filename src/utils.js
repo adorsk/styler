@@ -28,6 +28,12 @@ export function sample (array, n, opts = {}) {
   return shuffle(array, opts).slice(0, n)
 }
 
+export function choice (array, opts = {}) {
+  const { random } = {random: Math.random, ...opts}
+  const idx = Math.round(random() * array.length)
+  return array[idx]
+}
+
 /* from d3-interpolate */
 function basis(t1, v0, v1, v2, v3) {
   let t2 = t1 * t1, t3 = t2 * t1;
@@ -54,5 +60,6 @@ export default {
   pathDefToD,
   sample,
   shuffle,
+  choice,
   interpolateBasis,
 }

@@ -7,6 +7,7 @@ import NoiseRenderer from './NoiseRenderer'
 import BasisGradientRenderer from './BasisGradientRenderer'
 import StrokesRenderer from './StrokesRenderer'
 import BlobsRenderer from './BlobsRenderer'
+import LetterBoxRenderer from './LetterBoxRenderer'
 
 let registry = {}
 
@@ -217,6 +218,13 @@ registry['blobs'] = (() => {
   const blobsRenderer = new BlobsRenderer()
   return new CanvasRenderer({
     renderTile: blobsRenderer.renderTile.bind(blobsRenderer),
+  })
+})()
+
+registry['letter box'] = (() => {
+  const letterBoxRenderer = new LetterBoxRenderer()
+  return new CanvasRenderer({
+    renderTile: letterBoxRenderer.renderTile.bind(letterBoxRenderer),
   })
 })()
 
