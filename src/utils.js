@@ -30,7 +30,7 @@ export function sample (array, n, opts = {}) {
 
 export function choice (array, opts = {}) {
   const { random } = {random: Math.random, ...opts}
-  const idx = Math.round(random() * array.length)
+  const idx = Math.round(random() * (array.length - 1))
   return array[idx]
 }
 

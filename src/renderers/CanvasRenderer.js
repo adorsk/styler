@@ -19,8 +19,7 @@ class CanvasRenderer extends BaseRenderer {
         width={globalBox.width}
         height={globalBox.height}
         updateCanvas={(canvas) => {
-          canvas.getContext('2d').clearRect(
-            0, 0, canvas.width, canvas.height)
+          canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
           this.renderTiles({...props, canvas})
         }}
       />

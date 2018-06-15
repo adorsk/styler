@@ -31,22 +31,16 @@ palettes['analogous'] = (opts = {}) => {
 
 palettes['reddish'] = (opts = {}) => {
   const { prng } = opts
-  return (() => {
-    const baseHue = 360
-    const palette = {
-      getColor: () => {
-        const fuzz = 5
-        const hue = (
-          (
-            baseHue
-            + prng.randomInt({min: -fuzz, max: fuzz})
-          ) % 360
-        )
-        return chroma.hsl(hue, 1, .5)
-      }
-    }
-    return palette
-  })()
+  const random = prng.random.bind(prng)
+  const colors = (
+    chroma.scale(['red', 'orange'])
+    .correctLightness()
+    .colors(4)
+  )
+  const palette = {
+    getColor: (() => chroma(utils.choice(colors, { random }))),
+  }
+  return palette
 }
 
 
