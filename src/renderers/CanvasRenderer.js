@@ -9,6 +9,7 @@ class CanvasRenderer extends BaseRenderer {
   constructor (props = {}) {
     super(props)
     this.renderTile = props.renderTile || (() => null)
+    this.preRenderTiles = props.preRenderTiles || (() => null)
   }
 
   renderPattern (props = {}) {
@@ -28,6 +29,7 @@ class CanvasRenderer extends BaseRenderer {
   }
 
   renderTiles (props = {}) {
+    this.preRenderTiles(props)
     const { canvas, tiles } = props
     const ctx = canvas.getContext('2d')
     tiles.map((tile, index) => {

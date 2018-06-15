@@ -56,10 +56,28 @@ export function interpolateBasis(values) {
   };
 }
 
+function generateNoiseImageData (opts) {
+  const { width, height, density, random, rgba } = opts
+  const numPixels = width * height
+  const numNoisePixels = Math.floor(density * numPixels)
+  const pixelIdxs = [...Array(numPixels).keys()]
+  const noisePixelIdxs = sample(pixelIdxs, numNoisePixels, {random})
+  const imgData = new ImageData(width, height)
+  for (let pixelIdx of noisePixelIdxs) {
+    const baseIdx = pixelIdx * 4
+    imgData.data[baseIdx + 0] = rgba[0]
+    imgData.data[baseIdx + 1] = rgba[1]
+    imgData.data[baseIdx + 2] = rgba[2]
+    imgData.data[baseIdx + 3] = Math.floor(255 * rgba[3])
+  }
+  return imgData
+}
+
 export default {
   pathDefToD,
   sample,
   shuffle,
   choice,
   interpolateBasis,
+  generateNoiseImageData,
 }

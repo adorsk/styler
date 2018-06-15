@@ -8,6 +8,7 @@ import BasisGradientRenderer from './BasisGradientRenderer'
 import StrokesRenderer from './StrokesRenderer'
 import BlobsRenderer from './BlobsRenderer'
 import LetterBoxRenderer from './LetterBoxRenderer'
+import StampRenderer from './StampRenderer'
 
 let registry = {}
 
@@ -225,6 +226,14 @@ registry['letter box'] = (() => {
   const letterBoxRenderer = new LetterBoxRenderer()
   return new CanvasRenderer({
     renderTile: letterBoxRenderer.renderTile.bind(letterBoxRenderer),
+  })
+})()
+
+registry['stamp'] = (() => {
+  const renderer = new StampRenderer()
+  return new CanvasRenderer({
+    preRenderTiles: renderer.preRenderTiles.bind(renderer),
+    renderTile: renderer.renderTile.bind(renderer),
   })
 })()
 

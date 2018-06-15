@@ -29,22 +29,10 @@ class NoiseRenderer {
 
   renderNoise (opts) {
     const { canvas, width, height, density, prng, rgba } = opts
-    const numPixels = width * height
-    const numNoisePixels = Math.floor(density * numPixels)
-    const pixelIdxs = [...Array(numPixels).keys()]
-    const noisePixelIdxs = utils.sample(
-      pixelIdxs,
-      numNoisePixels,
-      {random: prng.random.bind(prng)}
-    )
-    const imgData = this.memCtx.createImageData(width, height)
-    for (let pixelIdx of noisePixelIdxs) {
-      const baseIdx = pixelIdx * 4
-      imgData.data[baseIdx + 0] = rgba[0]
-      imgData.data[baseIdx + 1] = rgba[1]
-      imgData.data[baseIdx + 2] = rgba[2]
-      imgData.data[baseIdx + 3] = Math.floor(255 * rgba[3])
-    }
+    const imgData = utils.generateNoiseImageData({
+      width, height, density, rgba,
+      random: prng.random.bind(prng)
+    })
     this.memCtx.putImageData(imgData, 0, 0)
     canvas.getContext('2d').drawImage(this.memCanvas, 0, 0)
   }
