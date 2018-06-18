@@ -31,7 +31,7 @@ class Prng {
 
   randomInt (opts) {
     opts = Object.assign({}, opts);
-    let {min, max} = opts;
+    let {min, max} = {min: 0, ...opts};
     return Math.floor(min + ((max - min) * this.random()));
   }
 }

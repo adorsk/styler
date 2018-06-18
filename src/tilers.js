@@ -23,7 +23,8 @@ tilers.bigRect = (opts) => {
       y0: 0,
       y1: height,
       width,
-      height
+      height,
+      center: {x: width / 2, y: height / 2},
     },
   }]
   return tiles
@@ -60,6 +61,7 @@ tilers.rects = (opts) => {
           y1: y + rectDimensions.height,
           width: rectDimensions.width,
           height: rectDimensions.height,
+          center: {x: width / 2, y: height / 2},
         },
       }
       tiles.push(tile)
@@ -110,6 +112,7 @@ tilers.diamonds = (opts) => {
             y1: offsetY + dimensions.height,
             width: dimensions.width,
             height: dimensions.height,
+            center: {x: width / 2, y: height / 2},
           },
         }
         tiles.push(tile)

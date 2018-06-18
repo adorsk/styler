@@ -1,5 +1,6 @@
 import React from 'react'
 import chroma from 'chroma-js'
+import * as d3 from 'd3'
 
 import SvgRenderer from './SvgRenderer'
 import CanvasRenderer from './CanvasRenderer'
@@ -281,6 +282,69 @@ registry['ellipses'] = (() => {
           0, // rotation
           0, (2 * Math.PI) // start/end angles
         )
+        ctx.fillStyle = chroma(colorFn({t})).css()
+        ctx.fill()
+      }
+    }
+  })
+})()
+
+
+registry['blades'] = (() => {
+  return new CanvasRenderer({
+    renderTile: (props) => {
+      const {canvas, tile, palette, prng, colorGenerator } = props
+      const ctx = canvas.getContext('2d')
+      const lineGenerator = (
+        d3.line()
+        .x((d) => d.x)
+        .y((d) => d.y)
+        .context(ctx)
+        .curve(d3.curveBasis)
+      )
+      const xRadius = (tile.box.width * .05)
+      const yRadius = (tile.box.height * .2)
+      const seedColor = chroma(palette.getColor())
+      ctx.fillStyle = chroma(seedColor).set(
+        'hsl.h', (seedColor.get('hsl.h') + 180) % 360)
+      ctx.fillRect(0, 0, tile.box.width, tile.box.height)
+      const colorFn = colorGenerator({seedColor})
+      const numCurves = 100
+      for (let i = 0; i < numCurves; i++) {
+        const t = i / numCurves
+        const cx = prng.randomInt({max: tile.box.width})
+        const points = {
+          leftBottom: {
+            x: cx - prng.randomInt({max: xRadius}),
+            y: 0 - prng.randomInt({max: yRadius}),
+          },
+          leftMid: {
+            x: cx - prng.randomInt({max: xRadius}),
+            y: (
+              tile.box.center.y
+              + prng.randomInt({min: -yRadius, max: yRadius})
+            ),
+          },
+          top: {
+            x: cx + prng.randomInt({min: -xRadius, max: xRadius}),
+            y: tile.box.height + prng.randomInt({max: yRadius}),
+          },
+          rightMid: {
+            x: cx + prng.randomInt({max: xRadius}),
+            y: (
+              tile.box.center.y
+              + prng.randomInt({min: -yRadius, max: yRadius})
+            ),
+          },
+          rightBottom: {
+            x: cx + prng.randomInt({max: xRadius}),
+            y: 0 - prng.randomInt({max: yRadius}),
+          },
+        }
+        ctx.beginPath()
+        lineGenerator([points.leftBottom, points.leftMid, points.top])
+        lineGenerator([points.top, points.rightMid, points.rightBottom])
+        ctx.closePath()
         ctx.fillStyle = chroma(colorFn({t})).css()
         ctx.fill()
       }
