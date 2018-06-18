@@ -237,5 +237,56 @@ registry['stamp'] = (() => {
   })
 })()
 
+registry['rings'] = (() => {
+  return new CanvasRenderer({
+    renderTile: (props) => {
+      const { canvas, tile, palette, colorGenerator } = props
+      const ctx = canvas.getContext('2d')
+      const colorFn = colorGenerator({seedColor: palette.getColor()})
+      const diagonalLength = Math.pow(
+        (
+          Math.pow(tile.box.width, 2)
+          + Math.pow(tile.box.height, 2)
+        ),
+        .5
+      )
+      const maxRadius = diagonalLength / 2
+      const center = {x: tile.box.width / 2, y: tile.box.height / 2}
+      const lineWidth = 1
+      ctx.lineWidth = lineWidth
+      for (let i = maxRadius; i > 0; i -= lineWidth) {
+        ctx.beginPath()
+        ctx.arc(center.x, center.y, i, 0, (2 * Math.PI))
+        ctx.fillStyle = chroma(colorFn({t: i/maxRadius})).css()
+        ctx.fill()
+      }
+    }
+  })
+})()
+
+
+registry['ellipses'] = (() => {
+  return new CanvasRenderer({
+    renderTile: (props) => {
+      const { canvas, tile, palette, colorGenerator } = props
+      const ctx = canvas.getContext('2d')
+      const colorFn = colorGenerator({seedColor: palette.getColor()})
+      const center = {x: tile.box.width / 2, y: tile.box.height / 2}
+      const stepSize = .01
+      for (let t = 1; t > 0; t -= stepSize) {
+        ctx.beginPath()
+        ctx.ellipse(
+          center.x, center.y,
+          t * (tile.box.width / 2), t * (tile.box.height / 2), // radii
+          0, // rotation
+          0, (2 * Math.PI) // start/end angles
+        )
+        ctx.fillStyle = chroma(colorFn({t})).css()
+        ctx.fill()
+      }
+    }
+  })
+})()
+
 
 export default registry
