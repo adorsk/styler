@@ -61,7 +61,7 @@ tilers.rects = (opts) => {
           y1: y + rectDimensions.height,
           width: rectDimensions.width,
           height: rectDimensions.height,
-          center: {x: width / 2, y: height / 2},
+          center: {x: rectDimensions.width / 2, y: rectDimensions.height / 2},
         },
       }
       tiles.push(tile)
@@ -93,7 +93,7 @@ tilers.diamonds = (opts) => {
     for (const offset of offsets) {
       for (let x = -dimensions.width; x < width; x += dimensions.width) {
         const offsetX = x + offset[0]
-        const offsetY = y + offset[0]
+        const offsetY = y + offset[1]
         const tile = {
           key: `${x}-${y}--${offset.join('-')}`,
           x: offsetX,
@@ -112,7 +112,60 @@ tilers.diamonds = (opts) => {
             y1: offsetY + dimensions.height,
             width: dimensions.width,
             height: dimensions.height,
-            center: {x: width / 2, y: height / 2},
+            center: {x: dimensions.width / 2, y: dimensions.height / 2},
+          },
+        }
+        tiles.push(tile)
+      }
+    }
+  }
+  return tiles
+}
+
+
+tilers.hexagons = (opts) => {
+  const { width, height, n } = {
+    ...{width: 100, height: 100},
+    n: 12,
+    ...opts,
+  }
+  const dimensions = { width: (width / n) }
+  dimensions.height = dimensions.width * (Math.pow(3, .5) / 2)
+
+  const tiles = []
+  // offset rows
+  const quarterWidth = dimensions.width / 4
+  const offsets = [
+    [0, 0],
+    [3 * quarterWidth, dimensions.height / 2]
+  ]
+  // start outside of bounds, to allow for partial tiles.
+  for (let y = -dimensions.height; y < height; y += dimensions.height) {
+    for (const offset of offsets) {
+      for (let x = -dimensions.width; x < width; x += (6 * quarterWidth)) {
+        const offsetX = x + offset[0]
+        const offsetY = y + offset[1]
+        const tile = {
+          key: `${x}-${y}--${offset.join('-')}`,
+          x: offsetX,
+          y: offsetY,
+          pathDef: [
+            ['M', [0, (dimensions.height / 2)]],
+            ['L', [quarterWidth, 0]],
+            ['L', [3 * quarterWidth, 0]],
+            ['L', [dimensions.width, (dimensions.height / 2)]],
+            ['L', [3 * quarterWidth, dimensions.height]],
+            ['L', [quarterWidth, dimensions.height]],
+            ['L', [0, (dimensions.height / 2)]],
+          ],
+          box: {
+            x0: offsetX,
+            x1: offsetX + dimensions.width,
+            y0: offsetY,
+            y1: offsetY + dimensions.height,
+            width: dimensions.width,
+            height: dimensions.height,
+            center: {x: dimensions.width / 2, y: dimensions.height / 2},
           },
         }
         tiles.push(tile)

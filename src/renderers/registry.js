@@ -353,4 +353,45 @@ registry['blades'] = (() => {
 })()
 
 
+registry['bundle curves'] = (() => {
+  return new CanvasRenderer({
+    renderTile: (props) => {
+      const {canvas, tile, palette, prng, colorGenerator } = props
+      const ctx = canvas.getContext('2d')
+      const baseLineGenerator = (
+        d3.line()
+        .x((d) => d.x)
+        .y((d) => d.y)
+        .context(ctx)
+      )
+      const seedColor = chroma(palette.getColor())
+      const colorFn = colorGenerator({seedColor})
+      const numCurves = 100
+      const points = {
+        left: {x: 0, y: tile.box.center.y},
+        topMid: {x: tile.box.center.x, y: tile.box.height},
+        right: {x: tile.box.width, y: tile.box.center.y},
+        bottomMid: {x: tile.box.center.x, y: 0},
+      }
+      const pointGroups = [
+        [points.left, points.topMid, points.right],
+        [points.left, points.bottomMid, points.right],
+      ]
+      for (let i = 0; i < numCurves; i++) {
+        const t = i / numCurves;
+        const curve = d3.curveBundle.beta(1 - t)
+        const lineGenerator = baseLineGenerator.curve(curve)
+        ctx.fillStyle = chroma(colorFn({t})).css()
+        for (let pointGroup of pointGroups) {
+          ctx.beginPath()
+          lineGenerator(pointGroup)
+          ctx.closePath()
+          ctx.fill()
+        }
+      }
+    }
+  })
+})()
+
+
 export default registry

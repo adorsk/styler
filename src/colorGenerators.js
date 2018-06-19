@@ -78,6 +78,12 @@ colorGenerators.toTransparent = (props) => {
   return generator
 }
 
+colorGenerators.toGray = (props) => {
+  return colorGenerators.scale({
+    colors: [props.seedColor, chroma(props.seedColor).set('hsl.s', .05)]
+  })
+}
+
 colorGenerators.identity = (props) => {
   return () => props.seedColor
 }
