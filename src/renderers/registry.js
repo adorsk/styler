@@ -394,4 +394,40 @@ registry['bundle curves'] = (() => {
 })()
 
 
+registry['random curves'] = (() => {
+  return new CanvasRenderer({
+    renderTile: (props) => {
+      const {canvas, tile, palette, prng, colorGenerator } = props
+      const ctx = canvas.getContext('2d')
+      const lineGenerator = (
+        d3.line()
+        .x((d) => d.x)
+        .y((d) => d.y)
+        .context(ctx)
+        .curve(d3.curveBasis)
+      )
+      const seedColor = chroma(palette.getColor())
+      const colorFn = colorGenerator({seedColor})
+      const numCurves = 100
+      const numPointsPerCurve = 3
+      ctx.lineWidth = tile.box.width / 1e2
+      for (let i = 0; i < numCurves; i++) {
+        const t = i / numCurves
+        const points = [...Array(numPointsPerCurve).keys()].map(() => {
+          return {
+            x: prng.randomInt({max: tile.box.width}),
+            y: prng.randomInt({max: tile.box.height}),
+          }
+        })
+        ctx.beginPath()
+        lineGenerator(points)
+        ctx.closePath()
+        ctx.strokeStyle = chroma(colorFn({t})).css()
+        ctx.stroke()
+      }
+    }
+  })
+})()
+
+
 export default registry
