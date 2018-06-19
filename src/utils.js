@@ -58,7 +58,7 @@ export function interpolateBasis(values) {
 
 function generateNoiseImageData (opts) {
   const { width, height, density, random, rgba } = opts
-  const numPixels = width * height
+  const numPixels = Math.round(width * height)
   const numNoisePixels = Math.floor(density * numPixels)
   const pixelIdxs = [...Array(numPixels).keys()]
   const noisePixelIdxs = sample(pixelIdxs, numNoisePixels, {random})
