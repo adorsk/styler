@@ -49,7 +49,6 @@ function generateEquiPalette(props = {}) {
   }
 }
 
-const equiPaletteColorGroups = []
 const tertiaries = []
 const hueAnglePerTertiary = 30
 for (let i = 0; i < 360; i += hueAnglePerTertiary) {

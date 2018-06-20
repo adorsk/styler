@@ -117,7 +117,7 @@ registry['gradient'] = new SvgRenderer({
   }
 })
 
-registry['circles'] = new SvgRenderer({
+registry['circle confetti'] = new SvgRenderer({
   renderTile: (props) => {
     const { tile, prng, palette } = props
     const numCircles = prng.randomInt({min: 5, max: 10})
@@ -253,13 +253,21 @@ registry['rings'] = (() => {
       )
       const maxRadius = diagonalLength / 2
       const center = {x: tile.box.width / 2, y: tile.box.height / 2}
-      const lineWidth = 1
-      ctx.lineWidth = lineWidth
-      for (let i = maxRadius; i > 0; i -= lineWidth) {
+      const stepSize = .01
+      const ring = (t) => {
+        ctx.arc(center.x, center.y, t * maxRadius, 0, (2 * Math.PI))
+      }
+      for (let t = stepSize; t < 1; t += stepSize) {
+        ctx.save()
         ctx.beginPath()
-        ctx.arc(center.x, center.y, i, 0, (2 * Math.PI))
-        ctx.fillStyle = chroma(colorFn({t: i/maxRadius})).css()
+        ring(t - stepSize)
+        ring(t)
+        ctx.clip('evenodd')
+        ctx.beginPath()
+        ring(t)
+        ctx.fillStyle = chroma(colorFn({t})).css()
         ctx.fill()
+        ctx.restore()
       }
     }
   })
@@ -274,16 +282,20 @@ registry['ellipses'] = (() => {
       const colorFn = colorGenerator({seedColor: palette.getColor()})
       const center = {x: tile.box.width / 2, y: tile.box.height / 2}
       const stepSize = .01
-      for (let t = 1; t > 0; t -= stepSize) {
+      const ellipse = (t) => {
+        const rx = t * tile.box.width / 2
+        const ry = t * tile.box.height / 2
+        ctx.ellipse(center.x, center.y, rx, ry, 0, 0, (2 * Math.PI))
+      }
+      for (let t = stepSize; t < 1; t += stepSize) {
+        ctx.save()
         ctx.beginPath()
-        ctx.ellipse(
-          center.x, center.y,
-          t * (tile.box.width / 2), t * (tile.box.height / 2), // radii
-          0, // rotation
-          0, (2 * Math.PI) // start/end angles
-        )
+        ellipse(t - stepSize)
+        ellipse(t)
+        ctx.clip('evenodd')
         ctx.fillStyle = chroma(colorFn({t})).css()
         ctx.fill()
+        ctx.restore()
       }
     }
   })
@@ -356,7 +368,7 @@ registry['blades'] = (() => {
 registry['bundle curves'] = (() => {
   return new CanvasRenderer({
     renderTile: (props) => {
-      const {canvas, tile, palette, prng, colorGenerator } = props
+      const {canvas, tile, palette, colorGenerator } = props
       const ctx = canvas.getContext('2d')
       const baseLineGenerator = (
         d3.line()
