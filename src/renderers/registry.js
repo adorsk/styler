@@ -2,6 +2,7 @@ import React from 'react'
 import chroma from 'chroma-js'
 import * as d3 from 'd3'
 
+import utils from '../utils'
 import SvgRenderer from './SvgRenderer'
 import CanvasRenderer from './CanvasRenderer'
 import NoiseRenderer from './NoiseRenderer'
@@ -238,7 +239,7 @@ registry['stamp'] = (() => {
   })
 })()
 
-registry['rings'] = (() => {
+registry['monocolor rings'] = (() => {
   return new CanvasRenderer({
     renderTile: (props) => {
       const { canvas, tile, palette, colorGenerator } = props
@@ -255,7 +256,8 @@ registry['rings'] = (() => {
       const center = {x: tile.box.width / 2, y: tile.box.height / 2}
       const stepSize = .01
       const ring = (t) => {
-        ctx.arc(center.x, center.y, t * maxRadius, 0, (2 * Math.PI))
+        ctx.moveTo(center.x, center.y)
+        ctx.arc(center.x, center.y, t * maxRadius, 0, utils.toRadians(360))
       }
       for (let t = stepSize; t < 1; t += stepSize) {
         ctx.save()
@@ -274,7 +276,7 @@ registry['rings'] = (() => {
 })()
 
 
-registry['ellipses'] = (() => {
+registry['monocolor ellipses'] = (() => {
   return new CanvasRenderer({
     renderTile: (props) => {
       const { canvas, tile, palette, colorGenerator } = props
@@ -285,11 +287,12 @@ registry['ellipses'] = (() => {
       const ellipse = (t) => {
         const rx = t * tile.box.width / 2
         const ry = t * tile.box.height / 2
-        ctx.ellipse(center.x, center.y, rx, ry, 0, 0, (2 * Math.PI))
+        ctx.ellipse(center.x, center.y, rx, ry, 0, 0, utils.toRadians(360))
       }
       for (let t = stepSize; t < 1; t += stepSize) {
         ctx.save()
         ctx.beginPath()
+        ctx.moveTo(center.x, center.y)
         ellipse(t - stepSize)
         ellipse(t)
         ctx.clip('evenodd')
@@ -436,6 +439,58 @@ registry['random curves'] = (() => {
         ctx.closePath()
         ctx.strokeStyle = chroma(colorFn({t})).css()
         ctx.stroke()
+      }
+    }
+  })
+})()
+
+
+registry['polycolor rings'] = (() => {
+  return new CanvasRenderer({
+    renderTile: (props) => {
+      const { canvas, tile, prng, palette, colorGenerator } = props
+      const ctx = canvas.getContext('2d')
+      const colorFn = colorGenerator({seedColor: palette.getColor()})
+      const diagonalLength = Math.pow(
+        (
+          Math.pow(tile.box.width, 2)
+          + Math.pow(tile.box.height, 2)
+        ),
+        .5
+      )
+      const maxRadius = diagonalLength / 2
+      const center = {x: tile.box.width / 2, y: tile.box.height / 2}
+      const ring = (t) => {
+        ctx.moveTo(center.x, center.y)
+        ctx.arc(center.x, center.y, t * maxRadius, 0, utils.toRadians(360))
+      }
+      const polycolorRing = (t) => {
+        const radius = t * maxRadius
+        const numAngleSteps = 10
+        const angleStep = 360 / numAngleSteps
+        const seedAngle = t * 360
+        for (let i = 0; i < numAngleSteps; i++) {
+          const startAngle = (seedAngle + (i * angleStep)) % 360
+          const endAngle = (startAngle + angleStep) % 360
+          ctx.beginPath()
+          ctx.moveTo(center.x, center.y)
+          ctx.arc(
+            center.x, center.y, radius,
+            utils.toRadians(startAngle), utils.toRadians(endAngle)
+          )
+          ctx.fillStyle = chroma(colorFn({t: i / numAngleSteps})).css()
+          ctx.fill()
+        }
+      }
+      const tStep = .01
+      for (let t = tStep; t < 1; t += tStep) {
+        ctx.save()
+        ctx.beginPath()
+        ring(t - tStep)
+        ring(t)
+        ctx.clip('evenodd')
+        polycolorRing(t)
+        ctx.restore()
       }
     }
   })

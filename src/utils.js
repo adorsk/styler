@@ -73,6 +73,10 @@ function generateNoiseImageData (opts) {
   return imgData
 }
 
+function toRadians(degrees) {
+  return degrees * (Math.PI / 180)
+}
+
 export default {
   pathDefToD,
   sample,
@@ -80,4 +84,5 @@ export default {
   choice,
   interpolateBasis,
   generateNoiseImageData,
+  toRadians,
 }
